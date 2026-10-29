@@ -6,6 +6,16 @@ HUD + slide-in menus for VRChat worlds (UdonSharp) **and standalone Unity games*
 
 **Window ▸ Package Manager ▸ UIHUD ▸ Samples ▸ Examples ▸ Import**, then open *Assets/Samples/UIHUD/…/Examples/UIHUD Examples.unity* and press Play. It covers every widget, both menus, runtime widgets, animations, a synced world panel, and 5 commented example scripts (see the sample's README).
 
+## Screenshots
+
+From the example scene (menu pages, captured in Play mode).
+
+| Welcome | Health | Settings |
+|---|---|---|
+| ![Welcome](Documentation~/Screenshots/welcome.png) | ![Health](Documentation~/Screenshots/health.png) | ![Settings](Documentation~/Screenshots/settings.png) |
+| **Layouts** | **Data** | **Charts** |
+| ![Layouts](Documentation~/Screenshots/layouts.png) | ![Data](Documentation~/Screenshots/data.png) | ![Charts](Documentation~/Screenshots/charts.png) |
+
 ## Quick start
 
 1. `GameObject > UIHUD > UIHUD System (HUD + Menu)` builds everything, with all events wired.
