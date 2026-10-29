@@ -51,7 +51,7 @@ namespace LogicCuteGuy.UIHUD
         private void Update()
         {
             if (!_showing) return;
-            _timer += Time.deltaTime;
+            _timer += Time.unscaledDeltaTime;
             float total = showSeconds + fadeSeconds * 2f;
             if (_timer >= total) { _group.alpha = 0f; Next(); return; }
             float a = 1f;

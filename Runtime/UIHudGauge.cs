@@ -54,9 +54,9 @@ namespace LogicCuteGuy.UIHUD
 
         private void Update()
         {
-            if (source != null && !string.IsNullOrEmpty(variable) && Time.time >= _next)
+            if (source != null && !string.IsNullOrEmpty(variable) && Time.unscaledTime >= _next)
             {
-                _next = Time.time + interval;
+                _next = Time.unscaledTime + interval;
                 object v = source.GetProgramVariable(variable);
                 if (v != null)
                 {
@@ -70,7 +70,7 @@ namespace LogicCuteGuy.UIHUD
             }
             float target = Target();
             if (_shown == target) return;
-            _shown = Mathf.MoveTowards(_shown, target, smoothSpeed * Time.deltaTime);
+            _shown = Mathf.MoveTowards(_shown, target, smoothSpeed * Time.unscaledDeltaTime);
             Apply();
         }
 

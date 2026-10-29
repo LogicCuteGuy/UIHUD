@@ -8,7 +8,9 @@
     "VRC.Udon",
     "VRC.SDKBase",
     "VRC.SDK3",
-    "Unity.TextMeshPro"
+    "Unity.TextMeshPro",
+    "LogicCuteGuy.UIHUD.VRCShim",
+    "LogicCuteGuy.UIHUD.Editor.UdonShim"
   ],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],

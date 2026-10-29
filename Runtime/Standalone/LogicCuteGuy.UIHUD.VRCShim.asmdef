@@ -1,0 +1,22 @@
+{
+    "name": "LogicCuteGuy.UIHUD.VRCShim",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "!UIHUD_VRC"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.vrchat.worlds",
+            "expression": "",
+            "define": "UIHUD_VRC"
+        }
+    ],
+    "noEngineReferences": false
+}

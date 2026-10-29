@@ -308,7 +308,7 @@ namespace LogicCuteGuy.UIHUD
         {
             VRCPlayerApi.TrackingData head = _local.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
             Quaternion rot = smooth
-                ? Quaternion.Slerp(hudCanvas.rotation, head.rotation, 1f - Mathf.Exp(-vrHudSmoothing * Time.deltaTime))
+                ? Quaternion.Slerp(hudCanvas.rotation, head.rotation, 1f - Mathf.Exp(-vrHudSmoothing * Time.unscaledDeltaTime))
                 : head.rotation;
             hudCanvas.SetPositionAndRotation(head.position + rot * Vector3.forward * ViewDistance(), rot);
         }

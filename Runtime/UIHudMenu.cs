@@ -212,12 +212,12 @@ namespace LogicCuteGuy.UIHUD
         {
             if (_pageT < 1f)
             {
-                _pageT = Mathf.MoveTowards(_pageT, 1f, Time.deltaTime / pageFadeSeconds);
+                _pageT = Mathf.MoveTowards(_pageT, 1f, Time.unscaledDeltaTime / pageFadeSeconds);
                 ApplyPage();
             }
             if (_t == _target) return;
             float seconds = _target > _t ? animSeconds : closeSeconds;
-            _t = seconds > 0f ? Mathf.MoveTowards(_t, _target, Time.deltaTime / seconds) : _target;
+            _t = seconds > 0f ? Mathf.MoveTowards(_t, _target, Time.unscaledDeltaTime / seconds) : _target;
             Apply();
             if (_t == 0f && !isOpen)
             {

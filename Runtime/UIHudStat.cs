@@ -52,14 +52,14 @@ namespace LogicCuteGuy.UIHUD
             float d = newValue - old;
             deltaLabel.text = string.Format(deltaFormat, d);
             deltaLabel.color = (d > 0f) == higherIsBetter ? upColor : downColor;
-            _hideAt = deltaSeconds > 0f ? Time.time + deltaSeconds : 0f;
+            _hideAt = deltaSeconds > 0f ? Time.unscaledTime + deltaSeconds : 0f;
         }
 
         private void Update()
         {
-            if (_hideAt > 0f && Time.time >= _hideAt) { _hideAt = 0f; if (deltaLabel != null) deltaLabel.text = ""; }
-            if (source == null || string.IsNullOrEmpty(variable) || Time.time < _next) return;
-            _next = Time.time + interval;
+            if (_hideAt > 0f && Time.unscaledTime >= _hideAt) { _hideAt = 0f; if (deltaLabel != null) deltaLabel.text = ""; }
+            if (source == null || string.IsNullOrEmpty(variable) || Time.unscaledTime < _next) return;
+            _next = Time.unscaledTime + interval;
             object v = source.GetProgramVariable(variable);
             if (v == null) return;
             System.Type t = v.GetType();

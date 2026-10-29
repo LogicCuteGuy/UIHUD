@@ -175,7 +175,7 @@ namespace LogicCuteGuy.UIHUD
             if (_turning)
             {
                 if (vrTurnSmoothing <= 0f) _yaw = bodyYaw;
-                else _yaw += off * (1f - Mathf.Exp(-vrTurnSmoothing * Time.deltaTime));
+                else _yaw += off * (1f - Mathf.Exp(-vrTurnSmoothing * Time.unscaledDeltaTime));
                 if (Mathf.Abs(Mathf.DeltaAngle(_yaw, bodyYaw)) < 2f) _turning = false;
             }
             float scale = manager.Scale();

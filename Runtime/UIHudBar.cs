@@ -42,7 +42,7 @@ namespace LogicCuteGuy.UIHUD
         {
             float target = current / max;
             if (_shown == target) return;
-            _shown = smoothSpeed > 0f ? Mathf.MoveTowards(_shown, target, smoothSpeed * Time.deltaTime) : target;
+            _shown = smoothSpeed > 0f ? Mathf.MoveTowards(_shown, target, smoothSpeed * Time.unscaledDeltaTime) : target;
             ApplyFill();
         }
 

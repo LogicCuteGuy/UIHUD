@@ -1,0 +1,26 @@
+{
+    "name": "LogicCuteGuy.UIHUD.Editor.UdonShim",
+    "rootNamespace": "",
+    "references": [
+        "LogicCuteGuy.UIHUD.VRCShim"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "!UIHUD_VRC"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.vrchat.worlds",
+            "expression": "",
+            "define": "UIHUD_VRC"
+        }
+    ],
+    "noEngineReferences": false
+}

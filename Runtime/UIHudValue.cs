@@ -29,8 +29,8 @@ namespace LogicCuteGuy.UIHUD
 
         private void Update()
         {
-            if (source == null || Time.time < _next) return;
-            _next = Time.time + interval;
+            if (source == null || Time.unscaledTime < _next) return;
+            _next = Time.unscaledTime + interval;
             Refresh();
         }
 

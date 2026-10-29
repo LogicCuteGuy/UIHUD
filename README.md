@@ -1,6 +1,6 @@
 # UIHUD
 
-HUD + slide-in menus for VRChat worlds (UdonSharp). One setup works on **VR, Desktop and Mobile**.
+HUD + slide-in menus for VRChat worlds (UdonSharp) **and standalone Unity games**. One setup works on **VR, Desktop and Mobile**.
 
 ## Examples
 
@@ -189,7 +189,25 @@ From the [VRC Ui Shape](https://creators.vrchat.com/worlds/components/vrc_uishap
 
 ## Requirements
 
-- Unity 2022.3, VRChat Worlds SDK 3.10.5+ (UdonSharp), TextMeshPro 3.0.6
+- Unity 2022.3, TextMeshPro 3.0.6
+- VRChat worlds: VRChat Worlds SDK 3.10.5+ (UdonSharp). Standalone games: nothing else.
+
+## Standalone games (no VRChat SDK)
+
+The same scripts and the same `GameObject > UIHUD` menus work in a plain Unity project. When `com.vrchat.worlds`
+is not installed, two small built-in assemblies (`Runtime/Standalone`, `Editor/Standalone`) stand in for the VRChat
+APIs UIHUD uses; with the SDK installed they switch off by themselves.
+
+- **Player:** the main camera is the head; the feet are 1.6 m below it. For a real character add
+  **UIHudStandalonePlayer** anywhere (head, body, spawn, eye height, name): the hotbar, teleport and respawn buttons use it.
+- **Input:** mouse and touch through a normal EventSystem + StandaloneInputModule (the builder adds one). Keyboard
+  shortcuts use the legacy Input Manager (Player Settings > Active Input Handling: *Input Manager* or *Both*).
+- **VR:** placement uses XR head/hand tracking; pointing at menus with controllers needs your own XR UI input
+  module (e.g. XR Interaction Toolkit).
+- **Pausing:** UIHUD runs on unscaled time, so menus still open and animate with `Time.timeScale = 0`.
+- **Your scripts:** inherit `UdonSharpBehaviour` as usual (`SendCustomEvent`, `Get/SetProgramVariable`,
+  `PostLateUpdate`, VRCTween, DataList/DataDictionary/VRCJson work). Single player: sync is a no-op, `Networking.IsOwner` is always true.
+- The Examples sample scene is VRChat-only (its button events point at UdonBehaviours); build your own with the menus.
 
 ## Install
 

@@ -60,8 +60,8 @@ namespace LogicCuteGuy.UIHUD
 
         private void Update()
         {
-            if (source == null || string.IsNullOrEmpty(variable) || Time.time < _next) return;
-            _next = Time.time + interval;
+            if (source == null || string.IsNullOrEmpty(variable) || Time.unscaledTime < _next) return;
+            _next = Time.unscaledTime + interval;
             object v = source.GetProgramVariable(variable);
             if (v == null) return;
             if (v.GetType() == typeof(string))

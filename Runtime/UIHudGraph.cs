@@ -62,8 +62,8 @@ namespace LogicCuteGuy.UIHUD
         {
             if (sampleFps) { _frames++; _fpsTime += Time.unscaledDeltaTime; }
             if ((source == null || string.IsNullOrEmpty(variable)) && !sampleFps) return;
-            if (Time.time < _next) return;
-            _next = Time.time + interval;
+            if (Time.unscaledTime < _next) return;
+            _next = Time.unscaledTime + interval;
             if (sampleFps)
             {
                 AddSample(_fpsTime > 0f ? _frames / _fpsTime : 0f);

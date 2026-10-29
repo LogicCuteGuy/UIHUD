@@ -64,7 +64,7 @@ namespace LogicCuteGuy.UIHUD
             {
                 if (fills[i] == null) continue;
                 float shown = fills[i].rectTransform.anchorMax.x;
-                if (shown != _target[i]) SetFill(fills[i], Mathf.MoveTowards(shown, _target[i], smoothSpeed * Time.deltaTime));
+                if (shown != _target[i]) SetFill(fills[i], Mathf.MoveTowards(shown, _target[i], smoothSpeed * Time.unscaledDeltaTime));
             }
         }
 

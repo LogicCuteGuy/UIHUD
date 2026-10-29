@@ -28,8 +28,8 @@ namespace LogicCuteGuy.UIHUD
             _frames++;
             _fpsTime += Time.unscaledDeltaTime;
             if (_fpsTime >= 1f) { _fps = Mathf.RoundToInt(_frames / _fpsTime); _frames = 0; _fpsTime = 0f; }
-            if (Time.time < _next) return;
-            _next = Time.time + interval;
+            if (Time.unscaledTime < _next) return;
+            _next = Time.unscaledTime + interval;
             Refresh();
         }
 
