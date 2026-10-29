@@ -1,0 +1,22 @@
+{
+  "name": "LogicCuteGuy.UIHUD.Editor",
+  "rootNamespace": "LogicCuteGuy.UIHUD.Editor",
+  "references": [
+    "LogicCuteGuy.UIHUD.Runtime",
+    "UdonSharp.Runtime",
+    "UdonSharp.Editor",
+    "VRC.Udon",
+    "VRC.SDKBase",
+    "VRC.SDK3",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

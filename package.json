@@ -1,0 +1,23 @@
+{
+  "name": "com.logiccuteguy.uihud",
+  "displayName": "UIHUD",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "license": "MIT",
+  "description": "HUD + slide-in menus and UI widgets for VRChat worlds. Works on VR, desktop and mobile.",
+  "keywords": ["vrchat", "udonsharp", "ui", "hud", "menu"],
+  "author": { "name": "LogicCuteGuy" },
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6"
+  },
+  "samples": [
+    {
+      "displayName": "Examples",
+      "description": "Example world: HUD, menus, every widget, runtime widgets, animations, a synced world panel and 5 example scripts.",
+      "path": "Samples~/Examples"
+    }
+  ],
+  "vpmDependencies": {
+    "com.vrchat.worlds": "3.10.5"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "LogicCuteGuy.UIHUD.Runtime",
+  "rootNamespace": "LogicCuteGuy.UIHUD",
+  "references": [
+    "UdonSharp.Runtime",
+    "VRC.Udon",
+    "VRC.SDKBase",
+    "VRC.SDK3",
+    "Unity.TextMeshPro",
+    "VRC.Udon.Serialization.OdinSerializer"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
