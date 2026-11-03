@@ -671,6 +671,10 @@ namespace LogicCuteGuy.UIHUD.Editor
             var bg = (RectTransform)go.transform.Find("Background");
             bg.sizeDelta = new Vector2(48f, 48f);
             bg.anchoredPosition = new Vector2(24f, -28f);
+            var check = (RectTransform)bg.Find("Checkmark");
+            check.anchorMin = Vector2.zero;
+            check.anchorMax = Vector2.one;
+            check.offsetMin = check.offsetMax = Vector2.zero;
             var labelText = go.GetComponentInChildren<TextMeshProUGUI>();
             labelText.text = label;
             labelText.fontSize = 32f;
