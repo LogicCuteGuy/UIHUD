@@ -75,6 +75,7 @@ namespace LogicCuteGuy.UIHUD
         private float _fov = 60f, _aspect = 16f / 9f;
         private int _lastPixelW, _lastPixelH;
         private bool _touch;
+        private int _typingFrame = -10;
 
         private void Start()
         {
@@ -100,19 +101,35 @@ namespace LogicCuteGuy.UIHUD
 
         // ---------- Public API ----------
 
-        /// <summary>Opens every menu with openWithMainButton, or closes all open menus.</summary>
-        public void ToggleMenu() { if (AnyMenuOpen()) CloseMenu(); else OpenMenu(); }
+        /// <summary>
+        /// Opens every menu with openWithMainButton, or closes all open menus when one of those is open.
+        /// A menu opened with its own key (e.g. a Quick menu) does not stop the main button from opening the main menu.
+        /// World panels are never touched.
+        /// </summary>
+        public void ToggleMenu()
+        {
+            bool anyMain = false, mainOpen = false;
+            for (int i = 0; i < menus.Length; i++)
+            {
+                UIHudMenu m = menus[i];
+                if (m == null || m.worldSpace || !m.openWithMainButton) continue;
+                anyMain = true;
+                if (m.isOpen) mainOpen = true;
+            }
+            if (mainOpen || (!anyMain && AnyMenuOpen())) CloseMenu(); else OpenMenu();
+        }
 
         public void OpenMenu()
         {
             for (int i = 0; i < menus.Length; i++)
-                if (menus[i] != null && menus[i].openWithMainButton) menus[i].Open();
+                if (menus[i] != null && !menus[i].worldSpace && menus[i].openWithMainButton) menus[i].Open();
         }
 
+        /// <summary>Closes every open player-view menu (world panels stay as they are).</summary>
         public void CloseMenu()
         {
             for (int i = 0; i < menus.Length; i++)
-                if (menus[i] != null && menus[i].isOpen) menus[i].Close();
+                if (menus[i] != null && !menus[i].worldSpace && menus[i].isOpen) menus[i].Close();
         }
 
         /// <summary>Move the VR wrist button to the other hand (e.g. from a settings button or toggle).</summary>
@@ -123,6 +140,16 @@ namespace LogicCuteGuy.UIHUD
         public void ShowHud() { SetHudVisible(true); }
         public void HideHud() { SetHudVisible(false); }
         public void ToggleHud() { if (hudCanvas != null) SetHudVisible(!hudCanvas.gameObject.activeSelf); }
+
+        /// <summary>Written by a "Show HUD" UIHudToggle (valueVariable) before it sends _ApplyHudToggle.</summary>
+        [System.NonSerialized] public bool hudVisibleValue = true;
+        /// <summary>For a UIHudToggle: shows the HUD exactly when the toggle is on, so the two can't get out of step (ToggleHud can).</summary>
+        public void _ApplyHudToggle() { SetHudVisible(hudVisibleValue); }
+
+        /// <summary>Called every frame by a focused UIHudInput: menu keys and hotbar keys are ignored while typing.</summary>
+        public void _Typing() { _typingFrame = Time.frameCount; }
+        /// <summary>True while the player is typing in a UIHudInput.</summary>
+        public bool IsTyping() { return Time.frameCount - _typingFrame <= 1; }
 
         public void SetHudVisible(bool visible)
         {
@@ -186,7 +213,7 @@ namespace LogicCuteGuy.UIHUD
 
         private bool AnyMenuOpen()
         {
-            for (int i = 0; i < menus.Length; i++) if (menus[i] != null && menus[i].isOpen) return true;
+            for (int i = 0; i < menus.Length; i++) if (menus[i] != null && !menus[i].worldSpace && menus[i].isOpen) return true;
             return false;
         }
 
@@ -244,7 +271,7 @@ namespace LogicCuteGuy.UIHUD
 
         private void Update()
         {
-            if (platform != UIHudPlatform.Desktop) return;
+            if (platform != UIHudPlatform.Desktop || IsTyping()) return; // typing an "m" must not close the menu
             if (Input.GetKeyDown(desktopKey)) ToggleMenu();
             // Menus with their own key (a closed menu is inactive, so it can't listen itself).
             for (int i = 0; i < menus.Length; i++)

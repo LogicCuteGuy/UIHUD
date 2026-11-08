@@ -4,7 +4,7 @@ HUD + slide-in menus for VRChat worlds (UdonSharp) **and standalone Unity games*
 
 ## Examples
 
-**Window ▸ Package Manager ▸ UIHUD ▸ Samples ▸ Examples ▸ Import**, then open *Assets/Samples/UIHUD/…/Examples/UIHUD Examples.unity* and press Play. It covers every widget, both menus, runtime widgets, animations, a synced world panel, and 5 commented example scripts (see the sample's README).
+**Window ▸ Package Manager ▸ UIHUD ▸ Samples ▸ Examples ▸ Import**, then open *Assets/Samples/UIHUD/…/Examples/UIHUD Examples.unity* and press Play. It covers every widget, both menus, runtime widgets, animations, world panels (welcome board, teleports, room controls, a synced counter and poll, a shop), and 7 commented example scripts (see the sample's README).
 
 ## Screenshots
 
@@ -107,6 +107,9 @@ The HUD canvas resizes itself to fill the view, so you can anchor HUD elements t
 
 - Every `UIHudMenu` sits on its own canvas and slides in from its `side`: **Left / Right / Top / Bottom / Center**.
 - `openWithMainButton` controls whether the M key, wrist button or MENU button opens it. Turn it off for menus that you open only from another button (`UIHudButton.menuToToggle`).
+- The main button opens the main menus even when another menu (e.g. one with its own key) is open; when a main menu is open it closes every open menu. World panels are never opened or closed by it.
+- Opening a menu that is already open (e.g. a button inside it that opens it at another page) keeps it where it is. Menus always open level, even with the head tilted.
+- While the player types in a `UIHudInput`, the menu keys and hotbar keys 1–9 are ignored. A text input on a world panel outside the `UIHUD` object needs its *Manager* field set for this.
 - **Own key / own button** (menu Inspector):
   - **Own desktop key**, e.g. Q, opens/closes only that menu.
   - **Own wrist & mobile button** adds a button for that menu next to the main one on the VR wrist and the mobile corner. Uncheck it to remove the button.
@@ -148,7 +151,7 @@ The HUD canvas resizes itself to fill the view, so you can anchor HUD elements t
 | `UIHudInfo` | Live text from a template: `{time}` `{time12}` `{date}` `{players}` `{fps}` `{name}` `{uptime}` `{height}` | `Refresh()` |
 | `UIHudPages` | Pages inside a page, switched by tabs (on **Top** or down the **Left side**, set in quick edit) or by `< name >`. Nestable. Reports the page index | `currentPage`, `ShowPage(i)`, `ShowPageWithoutNotify(i)` |
 | `UIHudValue` | Shows one variable of any script (public or private) with a format like `Coins: {0}` or `{0:0.0}`; reads it every `interval` | `SetValue(v)`, `Refresh()` |
-| `UIHudTable` | Rows and columns from a `DataList` of `DataDictionary` (columns = keys), a `DataList` of `DataList`, a `DataDictionary` (key / value) or JSON. Sort column, rank column, `maxRows`, highlights your row (`{me}`). Can watch a DataList / DataDictionary / JSON string variable | `SetList`, `SetDictionary`, `SetJson`, `SetData`, `Render()` |
+| `UIHudTable` | Rows and columns from a `DataList` of `DataDictionary` (columns = keys), a `DataList` of `DataList`, a `DataDictionary` (key / value) or JSON. Sort column, rank column, `maxRows`, `maxCellChars` (long names end in `...` instead of running into the next column; default 16), highlights your row (`{me}`). Can watch a DataList / DataDictionary / JSON string variable | `SetList`, `SetDictionary`, `SetJson`, `SetData`, `Render()` |
 | `UIHudGraph` | Line or bar chart, newest point on the right. Auto or fixed range, min / max / now labels. Samples a number variable (int, float, double) or the frame rate every `interval` | `AddSample(v)`, `SetSamples(float[])`, `Clear()`, `SetStyle(0/1)` |
 | `UIHudStat` | Stat tile: small title, big number, and the change since the previous value (`+5` green / `-3` red; `higherIsBetter` flips the colours). Watches a number variable or takes `SetValue` | `SetValue(v)` |
 | `UIHudPie` | Donut / pie of named numbers (votes, team sizes) with a legend (`{0}` name, `{1}` value, `{2}` percent) and the total in the middle. 8 slices; extra entries are merged into *Other*. Turn off *Hole* for a full pie | `SetJson`, `SetEntry(name, v)`, `SetList`, `SetDictionary`, `Clear()` |
@@ -157,13 +160,16 @@ The HUD canvas resizes itself to fill the view, so you can anchor HUD elements t
 | Radial Bar | A `UIHudBar` with a round fill, label `{2:0}%` | same as `UIHudBar` |
 | Row / Grid / Scroll | Plain uGUI layout containers (no Udon). Scroll has a draggable scrollbar and a **Direction**: Vertical (list) or Horizontal (strip, each item gets a **Width**). Older Scroll widgets get a scrollbar with **+ Add scrollbar** in quick edit | – |
 
-**Data widgets** (`Widgets > Data`): Pie and Bar List take named numbers: a `DataDictionary` `{"Red": 4}`, a `DataList` of dictionaries (`labelKey` / `valueKey`), a `DataList` of `[name, value]` lists, or the same as JSON (in *json*, from a watched variable, or `SetJson`). a widget on a hidden page or closed menu doesn't update until it's shown (Udon skips inactive objects), so a graph only records while visible. To keep history, call `AddSample` from your own always-on script. The graph has 30 points; for more or fewer, delete it and make it with `UIHudBuilder.CreateGraph(parent, points)`. After adding these widgets, use **Rebuild templates** if you want `AddWidget("Value" / "Table" / "Graph")` at runtime.
+**Data widgets** (`Widgets > Data`): Pie and Bar List take named numbers: a `DataDictionary` `{"Red": 4}`, a `DataList` of dictionaries (`labelKey` / `valueKey`), a `DataList` of `[name, value]` lists, or the same as JSON (in *json*, from a watched variable, or `SetJson`). a widget on a hidden page or closed menu doesn't update until it's shown (Udon skips inactive objects), so a graph only records while visible. Button, toggle and selector text shrinks (down to 16) to fit its box, and a *Grid* grows with its cells instead of covering what's under it. World panels have an opaque background and are placed 0.8 m above the ground. Long Bar List names end in `...` on one line (bar lists made before this version: turn off *Wrapping* and set *Overflow* to *Ellipsis* on each Name text). To keep history, call `AddSample` from your own always-on script. The graph has 30 points; for more or fewer, delete it and make it with `UIHudBuilder.CreateGraph(parent, points)`. After adding these widgets, use **Rebuild templates** if you want `AddWidget("Value" / "Table" / "Graph")` at runtime.
 
 Each widget can call your own script. Set `target` and `eventName`. To also pass the widget's value, set `valueVariable`; it is written into that variable on your script before the event runs.
 
 ## Manager API
 
-`OpenMenu`, `CloseMenu`, `ToggleMenu`, `ShowHud`, `HideHud`, `ToggleHud`, plus `platform` and `isMenuOpen`.
+`OpenMenu`, `CloseMenu`, `ToggleMenu`, `ShowHud`, `HideHud`, `ToggleHud`, `IsTyping()`, plus `platform` and `isMenuOpen`.
+For a "Show HUD" toggle, set its *Value variable* to `hudVisibleValue` and *Event* to `_ApplyHudToggle` (a toggle wired to `ToggleHud` gets out of step after a `HideHud` from code).
+
+Widgets keep what your scripts set while their page is hidden: `SetIndex`, `SetData`/`SetJson`, `SetEntry`, `AddSample` are not reset when the page is shown for the first time. A volume slider (`audioVolume`) starts at the AudioSource's real volume, and its `SetValue` sets the volume too.
 Optional callbacks: `onMenuOpenedEvent`, `onMenuClosedEvent`, `onPlatformChangedEvent`.
 
 ### Add / remove / edit widgets at runtime

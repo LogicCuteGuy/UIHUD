@@ -319,9 +319,11 @@ namespace LogicCuteGuy.UIHUD.Editor
             {
                 RectTransform p0 = AddPage(menu, "Main");
                 var showHud = CreateToggle(p0, "Show HUD");
-                showHud.toggle.isOn = true;
+                showHud.toggle.isOn = manager.startWithHud;
                 showHud.target = manager;
-                showHud.eventName = nameof(UIHudManager.ToggleHud);
+                // Sets the HUD to the toggle's state (ToggleHud flips it, so a HideHud from code would invert the toggle).
+                showHud.valueVariable = nameof(UIHudManager.hudVisibleValue);
+                showHud.eventName = nameof(UIHudManager._ApplyHudToggle);
                 Sync(showHud);
                 var vol = CreateSlider(p0, "Volume");
                 vol.format = "P0";
@@ -510,6 +512,8 @@ namespace LogicCuteGuy.UIHUD.Editor
             menu.animSlide = false;
             Sync(menu);
             menu.GetComponent<CanvasGroup>().alpha = 1f;
+            var bg = menu.GetComponent<Image>();
+            Color c = bg.color; c.a = 1f; bg.color = c; // opaque: bright walls / floors behind would show through
             var shape = menu.GetComponent<VRCUiShape>();
             if (shape != null) shape.AllowFocusView = true; // fine at world distance
             menu.transform.localScale = Vector3.one * 0.001f; // 1 canvas px = 1 mm
@@ -526,8 +530,11 @@ namespace LogicCuteGuy.UIHUD.Editor
             Vector3 fwd = Vector3.ProjectOnPlane(cam.forward, Vector3.up);
             if (fwd.sqrMagnitude < 0.001f) fwd = Vector3.forward;
             fwd.Normalize();
+            Vector3 pos = cam.position + fwd * 2f;
+            // Stand it on the ground below (center 0.8 m up), not at the Scene camera's height, which is usually far too high.
+            if (Physics.Raycast(pos + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 100f)) pos.y = hit.point.y + 0.8f;
             Undo.RecordObject(t, "Place World Panel");
-            t.SetPositionAndRotation(cam.position + fwd * 2f, Quaternion.LookRotation(fwd, Vector3.up));
+            t.SetPositionAndRotation(pos, Quaternion.LookRotation(fwd, Vector3.up));
         }
 
         [MenuItem(Root + "Menu Page (add to selected menu)", false, Prio + 30)]
@@ -678,6 +685,7 @@ namespace LogicCuteGuy.UIHUD.Editor
             var labelText = go.GetComponentInChildren<TextMeshProUGUI>();
             labelText.text = label;
             labelText.fontSize = 32f;
+            ShrinkToFit(labelText);
             var lrt = labelText.rectTransform;
             lrt.offsetMin = new Vector2(64f, 0f);
 
@@ -785,6 +793,7 @@ namespace LogicCuteGuy.UIHUD.Editor
             Layout(prev.gameObject, 64f, 64f);
             var val = CreateText(row, "Medium", 30f);
             val.alignment = TextAlignmentOptions.Center;
+            ShrinkToFit(val);
             Layout(val.gameObject, 200f, 64f);
             var next = CreateRawButton(row, ">");
             Layout(next.gameObject, 64f, 64f);
@@ -1026,6 +1035,8 @@ namespace LogicCuteGuy.UIHUD.Editor
                 var hl = row.gameObject.AddComponent<HorizontalLayoutGroup>();
                 hl.spacing = 12f; hl.childControlWidth = true; hl.childControlHeight = true; hl.childForceExpandWidth = false;
                 var name = CreateText(row, "Name", 26f); name.gameObject.name = "Name";
+                name.enableWordWrapping = false; // a long name ends in "..." instead of wrapping into the next row
+                name.overflowMode = TextOverflowModes.Ellipsis;
                 Layout(name.gameObject, 150f, 40f);
                 var track = CreateRect("Track", row);
                 Layout(track.gameObject, -1f, 40f, 1f);
@@ -1213,7 +1224,7 @@ namespace LogicCuteGuy.UIHUD.Editor
             if (parent == null) return null;
             var grid = CreateRect("Grid", parent);
             grid.sizeDelta = new Vector2(600f, 260f);
-            Layout(grid.gameObject, -1f, 260f);
+            Layout(grid.gameObject, -1f, -1f); // no fixed height: the grid grows with its cells, so it never covers what's below
             var g = grid.gameObject.AddComponent<GridLayoutGroup>();
             g.cellSize = new Vector2(180f, 120f);
             g.spacing = new Vector2(12f, 12f);
@@ -1538,6 +1549,14 @@ namespace LogicCuteGuy.UIHUD.Editor
             return (RectTransform)go.transform;
         }
 
+        /// <summary>Long text shrinks (down to 16) to stay inside its box instead of spilling out.</summary>
+        internal static void ShrinkToFit(TextMeshProUGUI t)
+        {
+            t.enableAutoSizing = true;
+            t.fontSizeMax = t.fontSize;
+            t.fontSizeMin = Mathf.Min(16f, t.fontSize);
+        }
+
         internal static TextMeshProUGUI CreateText(Transform parent, string text, float size)
         {
             var rt = CreateRect("Text", parent);
@@ -1559,6 +1578,7 @@ namespace LogicCuteGuy.UIHUD.Editor
             var text = go.GetComponentInChildren<TextMeshProUGUI>();
             text.text = label;
             text.fontSize = 30f;
+            ShrinkToFit(text);
             text.color = Color.white;
             text.raycastTarget = false;
             var btn = go.GetComponent<Button>();

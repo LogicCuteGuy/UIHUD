@@ -54,7 +54,8 @@ namespace LogicCuteGuy.UIHUD
 
         private void Start()
         {
-            _values = new float[Mathf.Max(2, bars != null ? bars.Length : 2)];
+            // AddSample/SetSamples before the page was shown already made the buffer: don't wipe those samples.
+            if (_values == null) _values = new float[Mathf.Max(2, bars != null ? bars.Length : 2)];
             Render();
         }
 

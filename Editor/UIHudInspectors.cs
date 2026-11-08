@@ -221,14 +221,14 @@ namespace LogicCuteGuy.UIHUD.Editor
             {
                 EditorGUI.BeginChangeCheck();
                 string text = live ? tmp.text : EditorGUILayout.TextField(input != null ? "Placeholder" : "Text", tmp.text);
-                float size = EditorGUILayout.Slider("Font size", tmp.fontSize, 8f, 120f);
+                float size = EditorGUILayout.Slider(tmp.enableAutoSizing ? "Font size (max)" : "Font size", tmp.enableAutoSizing ? tmp.fontSizeMax : tmp.fontSize, 8f, 120f);
                 Color color = EditorGUILayout.ColorField("Text color", tmp.color);
                 var style = (FontStyles)EditorGUILayout.EnumFlagsField("Font style", tmp.fontStyle);
                 var align = (TextAlignmentOptions)EditorGUILayout.EnumPopup("Alignment", tmp.alignment);
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(tmp, "Edit Text");
-                    tmp.text = text; tmp.fontSize = size; tmp.color = color; tmp.fontStyle = style; tmp.alignment = align;
+                    tmp.text = text; tmp.fontSize = size; if (tmp.enableAutoSizing) tmp.fontSizeMax = size; // long text still shrinks to fit tmp.color = color; tmp.fontStyle = style; tmp.alignment = align;
                 }
             }
 

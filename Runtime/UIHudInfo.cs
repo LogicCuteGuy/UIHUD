@@ -23,6 +23,9 @@ namespace LogicCuteGuy.UIHUD
         private float _fpsTime;
         private int _fps;
 
+        // Shown again (menu reopened, page switched): don't show the old text until the next interval.
+        private void OnEnable() { _next = 0f; }
+
         private void Update()
         {
             _frames++;

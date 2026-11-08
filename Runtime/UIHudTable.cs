@@ -26,6 +26,8 @@ namespace LogicCuteGuy.UIHUD
         public float[] widths = new float[0];
         [Tooltip("Adds a # column in front.")]
         public bool showRank = true;
+        [Tooltip("Cells longer than this are cut with '...' so a long name can't run into the next column. 0 = no limit.")]
+        public int maxCellChars = 16;
 
         [Header("Rows")]
         [Tooltip("Sort by this column key (or index for lists of lists). Empty = keep the data order.")]
@@ -51,9 +53,12 @@ namespace LogicCuteGuy.UIHUD
         private object _lastSource;
         private string _lastJson;
         private float _next;
+        private bool _hasData;
 
         private void Start()
         {
+            // Start runs when the page is first shown: data a script set before that must not be replaced by the demo json.
+            if (_hasData) return;
             if (!string.IsNullOrEmpty(json)) SetJson(json);
             else Render();
         }
@@ -77,10 +82,11 @@ namespace LogicCuteGuy.UIHUD
         public void SetList(DataList rows) { SetData(new DataToken(rows)); }
         public void SetDictionary(DataDictionary rows) { SetData(new DataToken(rows)); }
 
-        public void SetData(DataToken data) { _data = data; Render(); }
+        public void SetData(DataToken data) { _hasData = true; _data = data; Render(); }
 
         public void SetJson(string text)
         {
+            _hasData = true;
             _lastJson = text;
             DataToken parsed;
             if (VRCJson.TryDeserializeFromJson(text, out parsed)) SetData(parsed);
@@ -122,7 +128,9 @@ namespace LogicCuteGuy.UIHUD
                 for (int c = 0; c < cols; c++)
                 {
                     string cell = Cell(row, keys[c], c).ToString();
-                    if (first == null) first = cell;
+                    if (first == null) first = cell; // highlight compares the full name
+                    // ponytail: cut by character count, not measured width; raise it (or widths) for wide columns.
+                    if (maxCellChars > 3 && cell.Length > maxCellChars) cell = cell.Substring(0, maxCellChars - 3) + "...";
                     line += "<pos=" + Pos(c, cols) + "%>" + cell;
                 }
                 if (!string.IsNullOrEmpty(mark) && first == mark) line = "<color=#" + hex + ">" + line + "</color>";

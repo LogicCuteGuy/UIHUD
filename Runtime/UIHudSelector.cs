@@ -20,8 +20,10 @@ namespace LogicCuteGuy.UIHUD
         public GameObject[] optionObjects;
 
         [System.NonSerialized] public int index;
+        private bool _set;
 
-        private void Start() { SetIndexWithoutNotify(startIndex); }
+        // Start runs when the page is first shown: keep an index a script already set (e.g. a restored setting).
+        private void Start() { if (!_set) SetIndexWithoutNotify(startIndex); }
 
         public void _OnNext() { Step(1); }
         public void _OnPrev() { Step(-1); }
@@ -30,6 +32,7 @@ namespace LogicCuteGuy.UIHUD
 
         public void SetIndexWithoutNotify(int i)
         {
+            _set = true;
             int n = options != null ? options.Length : 0;
             index = n == 0 ? 0 : Mathf.Clamp(i, 0, n - 1);
             if (valueLabel != null) valueLabel.text = n == 0 ? "" : options[index];

@@ -140,7 +140,8 @@ namespace LogicCuteGuy.UIHUD
 
         private void Update()
         {
-            if (!numberKeys || manager == null || manager.platform != UIHudPlatform.Desktop || slots == null) return;
+            // Not while the hotbar is switched off on desktop, or while the player types in a text field.
+            if (!numberKeys || manager == null || manager.platform != UIHudPlatform.Desktop || !showOnDesktop || slots == null || manager.IsTyping()) return;
             int n = Mathf.Min(slots.Length, 9);
             for (int i = 0; i < n; i++)
                 if (Input.GetKeyDown((i + 1).ToString())) { Press(i); return; }

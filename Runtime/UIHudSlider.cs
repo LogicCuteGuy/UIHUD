@@ -26,6 +26,8 @@ namespace LogicCuteGuy.UIHUD
         private void Start()
         {
             if (slider == null) slider = GetComponent<Slider>();
+            // Volume slider: show the volume the AudioSource really has, instead of a different number until first touched.
+            if (slider != null && audioVolume != null) slider.SetValueWithoutNotify(audioVolume.volume);
             if (slider != null) value = slider.value;
             UpdateLabel();
         }
@@ -39,11 +41,12 @@ namespace LogicCuteGuy.UIHUD
             Notify(value);
         }
 
-        /// <summary>Set from code without firing the callback.</summary>
+        /// <summary>Set from code without firing the callback (the AudioSource volume follows).</summary>
         public void SetValue(float v)
         {
             value = v;
-            if (slider != null) slider.SetValueWithoutNotify(v);
+            if (slider != null) { slider.SetValueWithoutNotify(v); value = slider.value; } // clamped to the slider range
+            if (audioVolume != null) audioVolume.volume = value;
             UpdateLabel();
         }
 

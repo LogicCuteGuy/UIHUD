@@ -109,6 +109,8 @@ namespace LogicCuteGuy.UIHUD
         public void Open()
         {
             Init();
+            // Already open (e.g. a button inside it that opens it at another page): keep it where it is.
+            if (isOpen && gameObject.activeSelf) return;
             gameObject.SetActive(true);
             if (!worldSpace)
             {
@@ -130,6 +132,13 @@ namespace LogicCuteGuy.UIHUD
             isOpen = false;
             _target = 0f;
             Notify(onCloseEvent);
+            // Opened and closed before it moved (same frame): Update sees nothing to animate and would
+            // leave an invisible panel (and its pointer collider) active. Finish the close now.
+            if (_t <= 0f)
+            {
+                gameObject.SetActive(false);
+                if (manager != null) manager._OnMenuStateChanged();
+            }
         }
 
         public void Toggle() { if (isOpen) Close(); else Open(); }
@@ -160,6 +169,9 @@ namespace LogicCuteGuy.UIHUD
             VRC.SDKBase.VRCPlayerApi.TrackingData head = local.GetTrackingData(VRC.SDKBase.VRCPlayerApi.TrackingDataType.Head);
             _pos = head.position;
             _rot = head.rotation;
+            // Level the panel: a head tilted sideways (VR) must not open a tilted menu.
+            Vector3 fwd = _rot * Vector3.forward;
+            if (Mathf.Abs(fwd.y) < 0.99f) _rot = Quaternion.LookRotation(fwd, Vector3.up);
             _dist = manager.ViewDistance();
             _halfW = manager.HalfWidth();
             _halfH = manager.HalfHeight();

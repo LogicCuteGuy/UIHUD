@@ -39,9 +39,12 @@ namespace LogicCuteGuy.UIHUD
         protected int _count;
         private string _lastJson;
         private float _next;
+        private bool _hasData;
 
         private void Start()
         {
+            // Start runs when the page is first shown: data a script set before that must not be replaced by the starting json.
+            if (_hasData) return;
             if (!string.IsNullOrEmpty(json)) SetJson(json);
             else Render();
         }
@@ -61,6 +64,7 @@ namespace LogicCuteGuy.UIHUD
 
         public void SetJson(string text)
         {
+            _hasData = true;
             _lastJson = text;
             DataToken parsed;
             if (VRCJson.TryDeserializeFromJson(text, out parsed)) SetData(parsed);
@@ -72,6 +76,7 @@ namespace LogicCuteGuy.UIHUD
 
         public void SetData(DataToken data)
         {
+            _hasData = true;
             _count = 0;
             if (data.TokenType == TokenType.DataDictionary)
             {
@@ -109,6 +114,7 @@ namespace LogicCuteGuy.UIHUD
         /// <summary>Sets one entry by name (adds it when new). Handy for votes: SetEntry("Red", votes).</summary>
         public void SetEntry(string label, float value)
         {
+            _hasData = true;
             int i = 0;
             while (i < _count && _labels[i] != label) i++;
             if (i == _count) { Grow(_count + 1); _labels[i] = label; _count++; }
@@ -117,7 +123,7 @@ namespace LogicCuteGuy.UIHUD
             Render();
         }
 
-        public void Clear() { _count = 0; Render(); }
+        public void Clear() { _hasData = true; _count = 0; Render(); }
 
         /// <summary>Redraws. The chart widgets override this.</summary>
         public virtual void Render() { }

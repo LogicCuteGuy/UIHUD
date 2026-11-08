@@ -119,7 +119,8 @@ namespace LogicCuteGuy.UIHUD.Editor
 
             foreach (var menu in root.GetComponentsInChildren<UIHudMenu>(true))
             {
-                Paint(menu.GetComponent<Image>(), panel, panelSprite, true);
+                // World panels are opaque: a bright (HDR) wall or floor behind them shows through even 8% transparency.
+                Paint(menu.GetComponent<Image>(), menu.worldSpace ? new Color(panel.r, panel.g, panel.b, 1f) : panel, panelSprite, true);
                 var vl = menu.GetComponent<VerticalLayoutGroup>();
                 if (vl != null) { Rec(vl); vl.padding = new RectOffset(padding, padding, padding, padding); vl.spacing = spacing + 4f; }
                 if (menu.pages != null)

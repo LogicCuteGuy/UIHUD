@@ -17,7 +17,17 @@ namespace LogicCuteGuy.UIHUD
         public TextMeshProUGUI echoLabel;
         public string echoFormat = "{0}";
 
+        [Tooltip("Optional (found in the parents). While you type here it ignores the menu keys and hotbar keys 1-9.")]
+        public UIHudManager manager;
+
         [System.NonSerialized] public string text = "";
+
+        private void Start() { if (manager == null) manager = GetComponentInParent<UIHudManager>(); }
+
+        private void Update()
+        {
+            if (manager != null && input != null && input.isFocused) manager._Typing();
+        }
 
         public void _OnSubmit()
         {
